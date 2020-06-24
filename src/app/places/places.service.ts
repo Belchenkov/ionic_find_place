@@ -13,7 +13,7 @@ export class PlacesService {
           '1',
           'Парк Победы',
           'Мемориальный комплекс, расположенный в городе Саратов на Соколовой горе в Волжском районе города',
-          'https://lh5.googleusercontent.com/p/AF1QipN4X4sHUCDWudWrKhAN0wdwJ3r9wX339nrsmmHn=w296-h202-n-k-no',
+          'https://view-photo.ru/wp-content/uploads/2016/09/DSC04841-1080x680.jpg',
           50
       ),
       new Place(
