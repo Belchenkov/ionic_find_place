@@ -9,6 +9,7 @@ import { AuthService } from "./auth.service";
   styleUrls: ['./auth.page.scss'],
 })
 export class AuthPage implements OnInit {
+  isLoading = false;
 
   constructor(
       private authService: AuthService,
@@ -19,8 +20,11 @@ export class AuthPage implements OnInit {
   }
 
   onLogin() {
+    this.isLoading = true;
     this.authService.login();
-    this.router.navigate(['/places', 'tabs', 'discover']);
+    setTimeout(() => {
+      this.isLoading = false;
+      this.router.navigate(['/places', 'tabs', 'discover']);
+    }, 3000);
   }
-
 }
