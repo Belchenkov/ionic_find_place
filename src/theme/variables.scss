@@ -4,7 +4,7 @@
 /** Ionic CSS Variables **/
 :root {
   /** primary **/
-  --ion-color-primary: #8b354d;
+  --ion-color-primary: #c4174c;
   --ion-color-primary-rgb: 56, 128, 255;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
@@ -237,4 +237,8 @@ ion-toolbar {
   .sc-ion-back-button-ios-h {
     --color: white;
   }
+}
+
+ion-button {
+  --box-shadow: 2px 2px 6px rgba(0, 0, 0, .6);
 }
