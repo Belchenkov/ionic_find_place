@@ -25,6 +25,7 @@
                       email
                       #emailCtrl="ngModel"
               ></ion-input>
+              <ion-icon name="mail-outline" slot="start"></ion-icon>
             </ion-item>
             <ion-item *ngIf="!emailCtrl.valid && emailCtrl.touched" lines="none">
               <ion-label>Invalid Email</ion-label>
@@ -39,6 +40,7 @@
                       minlength="6"
                       #passwordCtrl="ngModel"
               ></ion-input>
+              <ion-icon slot="start" name="eye-off-outline"></ion-icon>
             </ion-item>
             <ion-item *ngIf="!passwordCtrl.valid && passwordCtrl.touched" lines="none">
               <ion-label>Min 6 characters long</ion-label>
