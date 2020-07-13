@@ -3,7 +3,7 @@
     <div class="d-f">
       <img src="https://img.icons8.com/plasticine/45/000000/user-male-circle.png"/>
       <ion-title >
-        Login
+        {{ isLogin ? 'Login' : 'SignUp' }}
       </ion-title>
     </div>
   </ion-toolbar>
@@ -55,9 +55,10 @@
                     expand="full"
                     fill="outline"
                     type="button"
+                    (click)="onSwitchAuthMode()"
             >
               <ion-icon slot="start" name="swap-vertical"></ion-icon>
-              Switch to Login</ion-button>
+              Switch to {{ isLogin ? 'SignUp' : 'Login' }}</ion-button>
             <ion-button
                     color="primary"
                     expand="full"
@@ -67,8 +68,9 @@
                     type="submit"
                     [disabled]="!f.valid"
             >
-              <ion-icon slot="start" name="log-in-outline"></ion-icon>
-              Login
+              <ion-icon *ngIf="isLogin" slot="start" name="log-in-outline"></ion-icon>
+              <ion-icon *ngIf="!isLogin" slot="start" name="person-add-outline"></ion-icon>
+              {{ isLogin ? 'Login' : 'SignUp' }}
             </ion-button>
           </div>
         </ion-col>
