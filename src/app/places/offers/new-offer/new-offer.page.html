@@ -3,7 +3,18 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/places/tabs/offers"></ion-back-button>
     </ion-buttons>
-    <ion-title>New Offer</ion-title>
+    <div class="d-f">
+      <img src="https://img.icons8.com/plasticine/45/000000/price-comparison.png"/>
+      <ion-title>
+        <ion-title>New Offer</ion-title>
+      </ion-title>
+    </div>
+
+    <ion-buttons slot="primary">
+      <ion-button (click)="onCreateOffer()">
+        <ion-icon name="checkmark" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -33,6 +44,22 @@
           <ion-label position="floating">Price</ion-label>
           <ion-input type="number"></ion-input>
           <ion-icon name="cash-outline"  slot="start"></ion-icon>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-sm="6" offset-sm="3">
+        <ion-item>
+          <ion-label position="floating">Available from</ion-label>
+          <ion-datetime min="2020-01-01" max="2023-12-31"></ion-datetime>
+          <ion-icon name="calendar-outline" slot="start"></ion-icon>
+        </ion-item>
+      </ion-col>
+      <ion-col size-sm="6" offset-sm="3">
+        <ion-item>
+          <ion-label position="floating">Available to</ion-label>
+          <ion-datetime min="2020-01-02" max="2025-12-31"></ion-datetime>
+          <ion-icon name="calendar-outline" slot="start"></ion-icon>
         </ion-item>
       </ion-col>
     </ion-row>
