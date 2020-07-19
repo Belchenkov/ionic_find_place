@@ -1,6 +1,10 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>{{ selectedPlace.title }}</ion-title>
+    <div class="d-f ion-padding-start">
+      <img src="https://img.icons8.com/plasticine/45/000000/pay-date.png"/>
+      <ion-title>{{ selectedPlace.title }}</ion-title>
+    </div>
+
     <ion-buttons slot="primary">
       <ion-button (click)="onCancel()">
         <ion-icon name="close"></ion-icon>
@@ -10,6 +14,51 @@
 </ion-header>
 
 <ion-content class="ion-padding ion-text-center">
-  <p>{{ selectedPlace.description }}</p>
+  <ion-grid>
+    <ion-row>
+      <ion-col size-sm="6" offset-sm="3">
+        <ion-item>
+          <ion-label position="floating">First Name</ion-label>
+          <ion-input
+                  type="text"
+                  ngModel
+                  name="first-name"
+                  required
+          ></ion-input>
+          <ion-icon name="person-circle-outline" slot="start"></ion-icon>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-sm="6" offset-sm="3">
+        <ion-item>
+          <ion-label position="floating">Last Name</ion-label>
+          <ion-input
+                  type="text"
+                  ngModel
+                  name="last-name"
+                  required
+          ></ion-input>
+          <ion-icon name="person-circle" slot="start"></ion-icon>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size-sm="6" offset-sm="3">
+        <ion-item>
+          <ion-label position="floating">Number of Guests</ion-label>
+          <ion-select
+                  name="guest-number"
+                  ngModel="2"
+          >
+            <ion-select-option value="1">1</ion-select-option>
+            <ion-select-option value="2">2</ion-select-option>
+            <ion-select-option value="3">3</ion-select-option>
+          </ion-select>
+          <ion-icon name="people-outline" slot="start"></ion-icon>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
   <ion-button color="primary" (click)="onBookPlace()">Book!</ion-button>
 </ion-content>
