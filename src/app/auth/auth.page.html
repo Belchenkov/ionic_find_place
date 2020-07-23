@@ -1,26 +1,82 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>Authenticate</ion-title>
+  <ion-toolbar class="ion-padding-start">
+    <div class="d-f">
+      <img src="https://img.icons8.com/plasticine/45/000000/user-male-circle.png"/>
+      <ion-title >
+        {{ isLogin ? 'Login' : 'SignUp' }}
+      </ion-title>
+    </div>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ion-list class="ion-padding">
-    <ion-item>
-      <ion-label position="floating">E-Mail</ion-label>
-      <ion-input></ion-input>
-    </ion-item>
-  </ion-list>
-  <!--<div class="ion-text-center">
-    <ion-spinner
-            color="primary"
-            *ngIf="isLoading"
-    ></ion-spinner>
-  </div>-->
-  <ion-button
-          class="ion-padding"
-          color="primary"
-          (click)="onLogin()"
-          *ngIf="!isLoading"
-  >Login</ion-button>
+  <form #f="ngForm" (ngSubmit)="onSubmit(f)">
+    <ion-grid>
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-list class="ion-padding">
+            <ion-item>
+              <ion-label position="floating">E-Mail</ion-label>
+              <ion-input
+                      ngModel
+                      type="email"
+                      name="email"
+                      required
+                      email
+                      #emailCtrl="ngModel"
+              ></ion-input>
+              <ion-icon name="mail-outline" slot="start"></ion-icon>
+            </ion-item>
+            <ion-item *ngIf="!emailCtrl.valid && emailCtrl.touched" lines="none">
+              <ion-label>Invalid Email</ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Password</ion-label>
+              <ion-input
+                      type="password"
+                      name="password"
+                      ngModel
+                      required
+                      minlength="6"
+                      #passwordCtrl="ngModel"
+              ></ion-input>
+              <ion-icon slot="start" name="eye-off-outline"></ion-icon>
+            </ion-item>
+            <ion-item *ngIf="!passwordCtrl.valid && passwordCtrl.touched" lines="none">
+              <ion-label>Min 6 characters long</ion-label>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+          <div>
+            <ion-button
+                    color="primary"
+                    class="ion-margin"
+                    expand="full"
+                    fill="outline"
+                    type="button"
+                    (click)="onSwitchAuthMode()"
+            >
+              <ion-icon slot="start" name="swap-vertical"></ion-icon>
+              Switch to {{ isLogin ? 'SignUp' : 'Login' }}</ion-button>
+            <ion-button
+                    color="primary"
+                    expand="full"
+                    class="ion-margin"
+                    (click)="onLogin()"
+                    *ngIf="!isLoading"
+                    type="submit"
+                    [disabled]="!f.valid"
+            >
+              <ion-icon *ngIf="isLogin" slot="start" name="log-in-outline"></ion-icon>
+              <ion-icon *ngIf="!isLogin" slot="start" name="person-add-outline"></ion-icon>
+              {{ isLogin ? 'Login' : 'SignUp' }}
+            </ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
 </ion-content>

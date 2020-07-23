@@ -30,3 +30,12 @@
 * {
   font-family: 'Exo 2', cursive!important;
 }
+
+.d-f {
+  display: flex;
+  justify-content: center;
+}
+
+.ion-invalid.ion-touched ion-label {
+  color: var(--ion-color-danger);
+}
