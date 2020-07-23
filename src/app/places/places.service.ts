@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
 
 import { Place } from "./place.model";
+import { AuthService } from "../auth/auth.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlacesService {
-  constructor() { }
+  constructor(
+      private authService: AuthService
+  ) { }
 
   private _places: Place[] = [
       new Place(
@@ -16,7 +19,8 @@ export class PlacesService {
           'https://view-photo.ru/wp-content/uploads/2016/09/DSC04841-1080x680.jpg',
           50,
            new Date('2020-09-01'),
-           new Date('2020-12-31')
+           new Date('2020-12-31'),
+          'abc'
       ),
       new Place(
         '2',
@@ -25,7 +29,8 @@ export class PlacesService {
         'https://www.business-vector.info/wp-content/uploads/2015/01/most2.jpg',
       50,
           new Date('2020-09-05'),
-          new Date('2020-12-31')
+          new Date('2020-12-31'),
+          'abc'
         ),
     new Place(
         '3',
@@ -34,7 +39,8 @@ export class PlacesService {
         'https://saratov.express/wp-content/uploads/2019/11/e3a6863c-4308-4c40-8deb-98c5d45d1041.png',
       50,
         new Date('2020-09-15'),
-        new Date('2020-12-31')
+        new Date('2020-12-31'),
+        'abc'
         )
 
   ];
@@ -47,4 +53,24 @@ export class PlacesService {
       return {...this._places.find(p => p.id === id)};
   }
 
+  addPlace(
+      title: string,
+      description: string,
+      price: number,
+      dateFrom: Date,
+      dateTo: Date
+  ) {
+    const newPlace = new Place(
+        Math.random().toString(),
+        title,
+        description,
+        'https://r-cf.bstatic.com/images/hotel/max1024x768/994/9942054.jpg',
+        price,
+        dateFrom,
+        dateTo,
+        this.authService.userId
+    );
+    this._places.push(newPlace);
+      console.log(this._places)
+  }
 }
