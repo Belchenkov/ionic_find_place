@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { take, map } from 'rxjs/operators';
 
 import { Place } from "./place.model";
 import { AuthService } from "../auth/auth.service";
@@ -52,7 +52,12 @@ export class PlacesService {
   }
 
   getPlace(id: string) {
-      return {...this._places.find(p => p.id === id)};
+      return this.places.pipe(
+          take(1),
+          map(places => {
+            return {...places.find(p => p.id === id)};
+          })
+      );
   }
 
   addPlace(
