@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'https://ionic-find-places-892cf.firebaseio.com/'
+  apiUrl: 'https://ionic-find-places-892cf.firebaseio.com'
 };
 
 /*

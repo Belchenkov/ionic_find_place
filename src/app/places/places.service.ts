@@ -1,16 +1,21 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { take, map, tap, delay } from 'rxjs/operators';
+import { HttpClient } from "@angular/common/http";
 
 import { Place } from "./place.model";
 import { AuthService } from "../auth/auth.service";
+import { environment } from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlacesService {
+  apiUrl: string = environment.apiUrl;
+
   constructor(
-      private authService: AuthService
+      private authService: AuthService,
+      private http: HttpClient
   ) { }
 
   private _places = new BehaviorSubject<Place[]>([
@@ -44,7 +49,6 @@ export class PlacesService {
         new Date('2020-12-31'),
         'abc'
         )
-
   ]);
 
   get places() {
@@ -78,13 +82,20 @@ export class PlacesService {
         this.authService.userId
     );
 
-    return this.places.pipe(
+    return this.http.post(`${this.apiUrl}/offered-places.json`, { ...newPlace, id: null })
+        .pipe(
+            tap(resData => {
+                console.log(resData)
+            })
+        );
+
+    /*return this.places.pipe(
             take(1),
             delay(2000),
             tap(places => {
                 this._places.next(places.concat(newPlace));
             })
-    );
+    );*/
   }
 
   updatePlace(placeId: string, title: string, description: string) {
