@@ -7,6 +7,16 @@ import { Place } from "./place.model";
 import { AuthService } from "../auth/auth.service";
 import { environment } from "../../environments/environment";
 
+interface PlaceData {
+    availableFrom: string;
+    availableTo: string;
+    description: string;
+    imageUrl: string;
+    price: number;
+    title: string;
+    userId: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -55,6 +65,35 @@ export class PlacesService {
     return this._places.asObservable();
   }
 
+  fetchPlaces() {
+      return this.http.get<{[key: string]: PlaceData}>(`${this.apiUrl}/offered-places.json`)
+          .pipe(
+                map(resData => {
+                    const places = [];
+                    for(const key in resData) {
+                        if (resData.hasOwnProperty(key)) {
+                            places.push(
+                                new Place(
+                                    key,
+                                    resData[key].title,
+                                    resData[key].description,
+                                    resData[key].imageUrl,
+                                    resData[key].price,
+                                    new Date(resData[key].availableFrom),
+                                    new Date(resData[key].availableTo),
+                                    resData[key].userId
+                                )
+                            );
+                        }
+                    }
+                    return places;
+                }),
+                tap(places => {
+                    this._places.next(places);
+                })
+      );
+  }
+
   getPlace(id: string) {
       return this.places.pipe(
           take(1),
@@ -96,14 +135,6 @@ export class PlacesService {
                 this._places.next(places.concat(newPlace));
             })
         );
-
-    /*return this.places.pipe(
-            take(1),
-            delay(2000),
-            tap(places => {
-                this._places.next(places.concat(newPlace));
-            })
-    );*/
   }
 
   updatePlace(placeId: string, title: string, description: string) {
