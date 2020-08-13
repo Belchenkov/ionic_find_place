@@ -138,25 +138,34 @@ export class PlacesService {
   }
 
   updatePlace(placeId: string, title: string, description: string) {
+    let updatedPlaces: Place[];
+
     return this.places.pipe(
         take(1),
-        delay(2000),
-        tap(places => {
-        const updatedPlaceIndex = places.findIndex(pl => pl.id === placeId);
-        const updatedPlaces = [...places];
-        const oldPlace = updatedPlaces[updatedPlaceIndex];
+        switchMap(places => {
+            const updatedPlaceIndex = places.findIndex(pl => pl.id === placeId);
+            updatedPlaces = [...places];
+            const oldPlace = updatedPlaces[updatedPlaceIndex];
 
-        updatedPlaces[updatedPlaceIndex] = new Place(
-            oldPlace.id,
-            title,
-            description,
-            oldPlace.imageUrl,
-            oldPlace.price,
-            oldPlace.availableFrom,
-            oldPlace.availableTo,
-            oldPlace.userId
-        );
-        this._places.next(updatedPlaces);
-    }));
+            updatedPlaces[updatedPlaceIndex] = new Place(
+                oldPlace.id,
+                title,
+                description,
+                oldPlace.imageUrl,
+                oldPlace.price,
+                oldPlace.availableFrom,
+                oldPlace.availableTo,
+                oldPlace.userId
+            );
+
+            return  this.http.put(
+                `${this.apiUrl}/offered-places/${placeId}.json`,
+                { ...updatedPlaces[updatedPlaceIndex], id: null }
+            );
+        }),
+        tap(() => {
+            this._places.next(updatedPlaces);
+        })
+    );
   }
 }
