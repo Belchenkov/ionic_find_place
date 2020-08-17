@@ -1,16 +1,20 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
-import { take, tap, delay } from "rxjs/operators";
+import { take, tap, delay, switchMap } from "rxjs/operators";
+import { HttpClient } from "@angular/common/http";
 
 import { Booking } from "./booking.model";
 import { AuthService } from "../auth/auth.service";
+import { environment } from "../../environments/environment";
 
 @Injectable({ providedIn: 'root' })
 export class BookingService {
     private _bookings = new BehaviorSubject<Booking[]>([]);
+    apiUrl: string = environment.apiUrl;
 
     constructor(
-        private authService: AuthService
+        private authService: AuthService,
+        private http: HttpClient
     ) { }
 
     get bookings() {
@@ -27,6 +31,7 @@ export class BookingService {
         dateFrom: Date,
         dateTo: Date
     ) {
+        let generatedId: string;
         const newBooking = new Booking(
             Math.random().toString(),
             placeId,
@@ -40,13 +45,18 @@ export class BookingService {
             dateTo
         );
 
-        return this.bookings.pipe(
-            take(1),
-            delay(2000),
-            tap(bookings => {
-                this._bookings.next(bookings.concat(newBooking));
-            })
-        );
+        return this.http.post<{name: string}>(`${this.apiUrl}/bookings.json`, {...newBooking, id: null})
+            .pipe(
+                switchMap(resData => {
+                    generatedId = resData.name;
+                    return this.bookings;
+                }),
+                take(1),
+                tap(bookings => {
+                    newBooking.id = generatedId;
+                    this._bookings.next(bookings.concat(newBooking));
+                })
+            );
     }
 
     cancelBooking(bookingId: string) {
