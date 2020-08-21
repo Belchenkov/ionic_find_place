@@ -9,7 +9,6 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { SharedModule } from "./shared/pickers/shared.module";
 
 @NgModule({
   declarations: [AppComponent],
@@ -21,7 +20,6 @@ import { SharedModule } from "./shared/pickers/shared.module";
       AppRoutingModule,
   ],
   providers: [
-    SharedModule,
     StatusBar,
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
