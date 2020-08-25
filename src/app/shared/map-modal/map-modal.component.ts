@@ -8,6 +8,8 @@ import {
 } from '@angular/core';
 import { ModalController } from "@ionic/angular";
 
+import { environment } from "../../../environments/environment";
+
 @Component({
   selector: 'app-map-modal',
   templateUrl: './map-modal.component.html',
@@ -15,6 +17,7 @@ import { ModalController } from "@ionic/angular";
 })
 export class MapModalComponent implements OnInit, AfterViewInit {
   @ViewChild('map', { static: false }) mapElementRef: ElementRef;
+
 
   constructor(
       private modalCtrl: ModalController,
@@ -60,7 +63,7 @@ export class MapModalComponent implements OnInit, AfterViewInit {
 
     return new Promise((resolve, reject) => {
       const script = document.createElement('script');
-      script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyA_8n0BN3aBi6jASxQSEKT9zqgswsT4kxE';
+      script.src = 'https://maps.googleapis.com/maps/api/js?key=' + environment.googleMapsAPIKey;
       script.async = true;
       script.defer = true;
       document.body.appendChild(script);
