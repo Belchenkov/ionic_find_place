@@ -5,7 +5,7 @@ import { map, switchMap } from "rxjs/operators";
 import { of } from "rxjs";
 
 import { MapModalComponent } from "../../map-modal/map-modal.component";
-import {environment} from "../../../../environments/environment";
+import { environment } from "../../../../environments/environment";
 import { PlaceLocation } from "../../../places/location.model";
 
 @Component({
@@ -14,6 +14,8 @@ import { PlaceLocation } from "../../../places/location.model";
   styleUrls: ['./location-picker.component.scss'],
 })
 export class LocationPickerComponent implements OnInit {
+  selectedLocationImage: string;
+  isLoading = false;
 
   constructor(
       private modalCtrl: ModalController,
@@ -39,6 +41,7 @@ export class LocationPickerComponent implements OnInit {
                 staticMapImageUrl: null
             };
 
+            this.isLoading = true;
             this.getAddress(modalData.data.lat, modalData.data.lng)
                 .pipe(
                     switchMap(address => {
@@ -48,6 +51,8 @@ export class LocationPickerComponent implements OnInit {
                     })
                 ).subscribe(staticMapImageUrl => {
                     pickedLocation.staticMapImageUrl = staticMapImageUrl;
+                    this.selectedLocationImage = staticMapImageUrl;
+                    this.isLoading = false;
                 });
           });
 
