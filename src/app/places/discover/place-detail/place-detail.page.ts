@@ -47,7 +47,7 @@ export class PlaceDetailPage implements OnInit, OnDestroy {
         return;
       }
 
-      this.isLoading = true;
+    this.isLoading = true;
     this.placeSub = this.placesService
           .getPlace(paramMap.get('placeId'))
           .subscribe(place => {
