@@ -4,6 +4,7 @@ import { IonicModule } from "@ionic/angular";
 
 import { LocationPickerComponent } from "./location-picker/location-picker.component";
 import { MapModalComponent } from "../map-modal/map-modal.component";
+import { ImagePickerComponent } from "./image-picker/image-picker.component";
 
 @NgModule({
     imports: [
@@ -12,11 +13,13 @@ import { MapModalComponent } from "../map-modal/map-modal.component";
     ],
     declarations: [
         LocationPickerComponent,
-        MapModalComponent
+        MapModalComponent,
+        ImagePickerComponent
     ],
     exports: [
         LocationPickerComponent,
-        MapModalComponent
+        MapModalComponent,
+        ImagePickerComponent
     ],
     entryComponents: [
         MapModalComponent
