@@ -95,7 +95,7 @@ export class NewOfferPage implements OnInit {
   }
 
   onCreateOffer() {
-    if (!this.form.valid) {
+    if (!this.form.valid || !this.form.get('image').value) {
       return;
     }
     const { title, description, price, dateFrom, dateTo, location } = this.form.value;
