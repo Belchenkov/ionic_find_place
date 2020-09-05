@@ -4,10 +4,10 @@
           class="image"
           (click)="onPickImage()"
           [src]="selectedImage"
-          *ngIf="selectedImage"
+          *ngIf="selectedImage && showPreview"
   ></ion-img>
   <ion-button
-          *ngIf="!selectedImage"
+          *ngIf="!selectedImage || !showPreview"
           color="primary"
           (click)="onPickImage()"
   >
