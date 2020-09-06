@@ -8,7 +8,7 @@
           *ngIf="selectedLocationImage && !isLoading && showPreview"
   ></ion-img>
   <ion-button
-          *ngIf="(!selectedLocationImage && !isLoading)  || !showPreview"
+          *ngIf="(!selectedLocationImage || !showPreview) && !isLoading"
           color="primary"
           (click)="onPickLocation()"
   >
