@@ -5,10 +5,10 @@
           class="location-image"
           (click)="onPickLocation()"
           [src]="selectedLocationImage"
-          *ngIf="selectedLocationImage && !isLoading"
+          *ngIf="selectedLocationImage && !isLoading && showPreview"
   ></ion-img>
   <ion-button
-          *ngIf="!selectedLocationImage && !isLoading"
+          *ngIf="(!selectedLocationImage || !showPreview) && !isLoading"
           color="primary"
           (click)="onPickLocation()"
   >

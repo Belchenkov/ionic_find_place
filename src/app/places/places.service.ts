@@ -119,20 +119,28 @@ export class PlacesService {
             );
   }
 
+  uploadImage(image: File) {
+      const uploadData = new FormData();
+      uploadData.append('image', image);
+
+      return this.http.post<{imageUrl: string, imagePath: string}>('https://test', uploadData);
+  }
+
   addPlace(
       title: string,
       description: string,
       price: number,
       dateFrom: Date,
       dateTo: Date,
-      location: PlaceLocation
+      location: PlaceLocation,
+      imageUrl: string = 'https://r-cf.bstatic.com/images/hotel/max1024x768/994/9942054.jpg'
   ) {
     let generatedId: string;
     const newPlace = new Place(
         Math.random().toString(),
         title,
         description,
-        'https://r-cf.bstatic.com/images/hotel/max1024x768/994/9942054.jpg',
+        imageUrl,
         price,
         dateFrom,
         dateTo,
