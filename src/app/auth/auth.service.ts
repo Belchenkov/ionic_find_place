@@ -3,12 +3,22 @@ import { HttpClient } from "@angular/common/http";
 
 import { environment } from "../../environments/environment";
 
+interface AuthResponseData {
+  kind: string;
+  idToken: string;
+  email: string;
+  refreshToken: string;
+  localId: string;
+  expiresIn: string;
+  registered?: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private _userIsAuth = true;
-  private _userId = 'xyz';
+  private _userIsAuth = false;
+  private _userId = null;
 
   constructor(
       private http: HttpClient
@@ -23,7 +33,7 @@ export class AuthService {
   }
 
   signup(email: string, password: string) {
-    return this.http.post(
+    return this.http.post<AuthResponseData>(
         `https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=${
             environment.firebaseAPIKey
         }`,
