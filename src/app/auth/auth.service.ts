@@ -65,7 +65,7 @@ export class AuthService {
   }
 
   logout() {
-    this._user.next(null);b
+    this._user.next(null);
   }
 
   private setUserData(userData: AuthResponseData) {
