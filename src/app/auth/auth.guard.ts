@@ -27,6 +27,7 @@ export class AuthGuard implements CanLoad {
           .pipe(
               take(1),
               tap(isAuth => {
+                  console.log(isAuth)
                 if (!isAuth) {
                   return this.router.navigate(['/auth']);
                 }
