@@ -6,6 +6,7 @@ import {
   UrlSegment
 } from '@angular/router';
 import { Observable } from 'rxjs';
+import { take, tap } from "rxjs/operators";
 
 import { AuthService } from "./auth.service";
 
@@ -22,9 +23,14 @@ export class AuthGuard implements CanLoad {
   canLoad(
     route: Route,
     segments: UrlSegment[]): Observable<boolean> | Promise<boolean> | boolean {
-    if (!this.authService.userIsAuth) {
-      return this.router.navigate(['/auth']);
-    }
-    return this.authService.userIsAuth;
+      return this.authService.userIsAuth
+          .pipe(
+              take(1),
+              tap(isAuth => {
+                if (!isAuth) {
+                  return this.router.navigate(['/auth']);
+                }
+              })
+          );
   }
 }
