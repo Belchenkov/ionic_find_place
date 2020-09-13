@@ -8,6 +8,7 @@ import {
   NavController
 } from "@ionic/angular";
 import { Subscription } from "rxjs";
+import { switchMap } from "rxjs/operators";
 
 import { CreateBookingComponent } from "../../../bookings/create-booking/create-booking.component";
 import { Place } from "../../place.model";
@@ -48,24 +49,36 @@ export class PlaceDetailPage implements OnInit, OnDestroy {
       }
 
     this.isLoading = true;
-    this.placeSub = this.placesService
-          .getPlace(paramMap.get('placeId'))
-          .subscribe(place => {
-            this.place = place;
-            this.isBookable = place.userId !== this.authService.userId;
-            this.isLoading = false;
-      }, error => {
-        this.alertCtrl.create({
-          header: 'An error occurred!',
-          message: 'Could not load place.',
-          buttons: [
-            {
-              text: 'Okay',
-              handler: () => {
-                this.router.navigate(['/places/tabs/discover']);
+    let fetchedUserId: string;
+
+    this.authService.userId
+        .pipe(
+            switchMap(userId => {
+              if (!userId) {
+                throw new Error('Found no user!');
               }
-            }
-          ]
+
+              fetchedUserId = userId;
+
+              return this.placesService
+                  .getPlace(paramMap.get('placeId'))
+            })
+        ).subscribe(place => {
+            this.place = place;
+            this.isBookable = place.userId !== fetchedUserId;
+            this.isLoading = false;
+        }, error => {
+          this.alertCtrl.create({
+            header: 'An error occurred!',
+            message: 'Could not load place.',
+            buttons: [
+              {
+                text: 'Okay',
+                handler: () => {
+                  this.router.navigate(['/places/tabs/discover']);
+                }
+              }
+            ]
         }).then(alertEl => alertEl.present());
       });
     });

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { take, map, tap, delay, switchMap } from 'rxjs/operators';
+import { take, map, tap, switchMap } from 'rxjs/operators';
 import { HttpClient } from "@angular/common/http";
 
 import { Place } from "./place.model";
@@ -136,31 +136,46 @@ export class PlacesService {
       imageUrl: string = 'https://r-cf.bstatic.com/images/hotel/max1024x768/994/9942054.jpg'
   ) {
     let generatedId: string;
-    const newPlace = new Place(
-        Math.random().toString(),
-        title,
-        description,
-        imageUrl,
-        price,
-        dateFrom,
-        dateTo,
-        this.authService.userId,
-        location
-    );
+    let newPlace: Place;
 
-    return this.http
-        .post<{name: string}>(`${this.apiUrl}/offered-places.json`, { ...newPlace, id: null })
+    return this.authService.userId
         .pipe(
-            switchMap(resData => {
-                generatedId = resData.name;
-                return this.places;
-            }),
             take(1),
-            tap(places => {
-                newPlace.id = generatedId;
-                this._places.next(places.concat(newPlace));
+            switchMap(userId => {
+                if (!userId) {
+                    throw new Error('No user found!');
+                }
+
+                newPlace = new Place(
+                    Math.random().toString(),
+                    title,
+                    description,
+                    imageUrl,
+                    price,
+                    dateFrom,
+                    dateTo,
+                    userId,
+                    location
+                );
+
+                return this.http
+                    .post<{name: string}>(
+                        `${this.apiUrl}/offered-places.json`,
+                        { ...newPlace, id: null }
+                    )
+                    .pipe(
+                        switchMap(resData => {
+                            generatedId = resData.name;
+                            return this.places;
+                        }),
+                        take(1),
+                        tap(places => {
+                            newPlace.id = generatedId;
+                            this._places.next(places.concat(newPlace));
+                        })
+                    );
             })
-        );
+        )
   }
 
   updatePlace(placeId: string, title: string, description: string) {
