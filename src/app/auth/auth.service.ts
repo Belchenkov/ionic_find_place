@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, from } from "rxjs";
 import { map, tap } from "rxjs/operators";
 import { Plugins } from '@capacitor/core';
 
@@ -81,23 +81,71 @@ export class AuthService {
         )
     );
 
-    this.storeAuthData(userData.localId, userData.idToken, expirationTime.toISOString());
+    this.storeAuthData(
+        userData.localId,
+        userData.idToken,
+        expirationTime.toISOString(),
+        userData.email
+    );
   }
 
   private storeAuthData(
       userId: string,
       token: string,
-      tokenExpirationDate: string
+      tokenExpirationDate: string,
+      email: string
   ) {
     const data = JSON.stringify({
         userId,
         token,
-        tokenExpirationDate
+        tokenExpirationDate,
+        email
     });
 
     Plugins.Storage.set({
         key: 'authData',
         value: data
     });
+  }
+
+  autoLogin() {
+    return from(Plugins.Storage.get({
+        key: 'authData'
+    })).pipe(
+        map(storedData => {
+            if (!storedData || !storedData.value) {
+                return null;
+            }
+
+            const parsedData = JSON.parse(storedData.value) as  {
+                    token: string;
+                    tokenExpirationDate: string;
+                    userId: string;
+                    email: string;
+            };
+            const expirationTime = new Date(parsedData.tokenExpirationDate);
+
+            if (expirationTime <= new Date()) {
+                return null;
+            }
+
+            const user = new User(
+                parsedData.userId,
+                parsedData.email,
+                parsedData.token,
+                expirationTime
+            );
+
+            return user;
+        }),
+        tap(user => {
+            if (user) {
+                this._user.next(user);
+            }
+        }),
+        map(user => {
+            return !!user;
+        })
+    );
   }
 }
