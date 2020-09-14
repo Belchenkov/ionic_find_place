@@ -5,7 +5,7 @@ import {
   Router,
   UrlSegment
 } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { switchMap, take, tap } from "rxjs/operators";
 
 import { AuthService } from "./auth.service";
@@ -30,6 +30,8 @@ export class AuthGuard implements CanLoad {
                   if (!isAuth) {
                       return this.authService.autoLogin();
                   }
+
+                  return of(isAuth);
               }),
               tap(isAuth => {
                 if (!isAuth) {
