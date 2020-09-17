@@ -68,8 +68,13 @@ export class PlacesService {
   }
 
   fetchPlaces() {
-      return this.http.get<{[key: string]: PlaceData}>(`${this.apiUrl}/offered-places.json`)
+      return this.authService.token
           .pipe(
+              take(1),
+              switchMap(token => {
+                  return this.http.get<{[key: string]: PlaceData}>(`${this.apiUrl}/offered-places.json?auth=${token}`)
+              })
+          ).pipe(
                 map(resData => {
                     const places = [];
                     for(const key in resData) {
@@ -98,11 +103,15 @@ export class PlacesService {
   }
 
     getPlace(id: string) {
-        return this.http
-            .get<PlaceData>(
-                `${this.apiUrl}/offered-places/${id}.json`
-            )
+        return this.authService.token
             .pipe(
+                take(1),
+                switchMap(token => {
+                    return this.http
+                        .get<PlaceData>(
+                            `${this.apiUrl}/offered-places/${id}.json?auth=${token}`
+                        );
+                }),
                 map(placeData => {
                     return new Place(
                         id,
@@ -123,7 +132,18 @@ export class PlacesService {
       const uploadData = new FormData();
       uploadData.append('image', image);
 
-      return this.http.post<{imageUrl: string, imagePath: string}>('https://test', uploadData);
+      return this.authService.token
+          .pipe(
+              take(1),
+              switchMap(token => {
+                return this.http.post<{imageUrl: string, imagePath: string}>(
+                        `https://test?auth=${token}`,
+                        uploadData,
+                    { headers: { Authorization: 'Bearer ' + token } }
+                    );
+              })
+          )
+
   }
 
   addPlace(
@@ -136,13 +156,19 @@ export class PlacesService {
       imageUrl: string = 'https://r-cf.bstatic.com/images/hotel/max1024x768/994/9942054.jpg'
   ) {
     let generatedId: string;
+    let fetchedUserId: string;
     let newPlace: Place;
 
     return this.authService.userId
         .pipe(
             take(1),
             switchMap(userId => {
-                if (!userId) {
+                fetchedUserId = userId;
+                return this.authService.token;
+            }),
+            take(1),
+            switchMap(token => {
+                if (!fetchedUserId) {
                     throw new Error('No user found!');
                 }
 
@@ -154,13 +180,13 @@ export class PlacesService {
                     price,
                     dateFrom,
                     dateTo,
-                    userId,
+                    fetchedUserId,
                     location
                 );
 
                 return this.http
                     .post<{name: string}>(
-                        `${this.apiUrl}/offered-places.json`,
+                        `${this.apiUrl}/offered-places.json?auth=${token}`,
                         { ...newPlace, id: null }
                     )
                     .pipe(
@@ -180,34 +206,40 @@ export class PlacesService {
 
   updatePlace(placeId: string, title: string, description: string) {
     let updatedPlaces: Place[];
+    let fetchedToken: string;
 
-    return this.places.pipe(
-        take(1),
-        switchMap(places => {
-            const updatedPlaceIndex = places.findIndex(pl => pl.id === placeId);
-            updatedPlaces = [...places];
-            const oldPlace = updatedPlaces[updatedPlaceIndex];
+    return this.authService.token
+        .pipe(
+            take(1),
+            switchMap(token => {
+                return this.places;
+            }),
+            take(1),
+            switchMap(places => {
+                const updatedPlaceIndex = places.findIndex(pl => pl.id === placeId);
+                updatedPlaces = [...places];
+                const oldPlace = updatedPlaces[updatedPlaceIndex];
 
-            updatedPlaces[updatedPlaceIndex] = new Place(
-                oldPlace.id,
-                title,
-                description,
-                oldPlace.imageUrl,
-                oldPlace.price,
-                oldPlace.availableFrom,
-                oldPlace.availableTo,
-                oldPlace.userId,
-                oldPlace.location
-            );
+                updatedPlaces[updatedPlaceIndex] = new Place(
+                    oldPlace.id,
+                    title,
+                    description,
+                    oldPlace.imageUrl,
+                    oldPlace.price,
+                    oldPlace.availableFrom,
+                    oldPlace.availableTo,
+                    oldPlace.userId,
+                    oldPlace.location
+                );
 
-            return this.http.put(
-                `${this.apiUrl}/offered-places/${placeId}.json`,
-                { ...updatedPlaces[updatedPlaceIndex], id: null }
-            );
-        }),
-        tap(() => {
-            this._places.next(updatedPlaces);
-        })
+                return this.http.put(
+                    `${this.apiUrl}/offered-places/${placeId}.json?auth=${fetchedToken}`,
+                    { ...updatedPlaces[updatedPlaceIndex], id: null }
+                );
+            }),
+            tap(() => {
+                this._places.next(updatedPlaces);
+            })
     );
   }
 }

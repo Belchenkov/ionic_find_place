@@ -42,6 +42,13 @@ export class AuthService implements OnDestroy {
         );
   }
 
+  get token() {
+      return this._user.asObservable()
+          .pipe(
+              map(user => user ? user.token : null)
+          );
+  }
+
   signup(email: string, password: string) {
     return this.http
         .post<AuthResponseData>(
