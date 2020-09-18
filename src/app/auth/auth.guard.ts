@@ -5,8 +5,8 @@ import {
   Router,
   UrlSegment
 } from '@angular/router';
-import { Observable } from 'rxjs';
-import { take, tap } from "rxjs/operators";
+import { Observable, of } from 'rxjs';
+import { switchMap, take, tap } from "rxjs/operators";
 
 import { AuthService } from "./auth.service";
 
@@ -26,8 +26,14 @@ export class AuthGuard implements CanLoad {
       return this.authService.userIsAuth
           .pipe(
               take(1),
+              switchMap(isAuth => {
+                  if (!isAuth) {
+                      return this.authService.autoLogin();
+                  }
+
+                  return of(isAuth);
+              }),
               tap(isAuth => {
-                  console.log(isAuth)
                 if (!isAuth) {
                   return this.router.navigate(['/auth']);
                 }

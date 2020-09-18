@@ -8,7 +8,7 @@ import {
   NavController
 } from "@ionic/angular";
 import { Subscription } from "rxjs";
-import { switchMap } from "rxjs/operators";
+import { switchMap, take } from "rxjs/operators";
 
 import { CreateBookingComponent } from "../../../bookings/create-booking/create-booking.component";
 import { Place } from "../../place.model";
@@ -53,6 +53,7 @@ export class PlaceDetailPage implements OnInit, OnDestroy {
 
     this.authService.userId
         .pipe(
+            take(1),
             switchMap(userId => {
               if (!userId) {
                 throw new Error('Found no user!');
