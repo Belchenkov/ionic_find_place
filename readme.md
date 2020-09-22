@@ -2,7 +2,7 @@
 
 > Build "Find Place" app with Ionic 5 (Angular)
 
-### Demo(dev)
+### [Demo](http://ionic-find-place.surge.sh/)
 
 #### Get Started
 ```sh
